@@ -109,6 +109,8 @@
                 Create your first property
             </p>
         </field>
+        
+        
     </record>
         <record id="view_property_kanban" model="ir.ui.view">
         <field name="name">real_estate.property.kanban</field>

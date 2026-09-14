@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Lease Tree View -->
+    <record id="view_lease_tree" model="ir.ui.view">
+        <field name="name">real_estate.lease.tree</field>
+        <field name="model">real_estate.lease</field>
+        <field name="arch" type="xml">
+            <tree string="Leases">
+                <field name="name"/>
+                <field name="property_id"/>
+                <field name="tenant_id"/>
+                  <field name="state"/>
+                <field name="start_date"/>
+                <field name="end_date"/>
+                <field name="monthly_rent"/>
+                <field name="deposit_paid"/>
+            </tree>
+        </field>
+    </record>
+
+    <!-- Lease Form View -->
+    <record id="view_lease_form" model="ir.ui.view">
+        <field name="name">real_estate.lease.form</field>
+        <field name="model">real_estate.lease</field>
+        <field name="arch" type="xml">
+            <form string="Lease">
+            <header>
+                <field name="state" widget="statusbar" statusbar_visible="draft,active,at_risk,expired,cancelled"/>
+            </header>
+                <sheet>
+                    <div class="oe_title">
+                        <h1>
+                            <field name="name" placeholder="Lease Reference"/>
+                        </h1>
+                    </div>
+
+                    <group>
+                        <group string="Lease Information">
+                            <field name="property_id"/>
+                            <field name="state"/>
+                            <field name="tenant_id"/>
+                            <field name="start_date"/>
+                            <field name="end_date"/>
+                        </group>
+
+                        <group string="Dates">
+                            <field name="start_date"/>
+                            <field name="end_date"/>
+                        </group>
+
+                        <group string="Financial Information">
+                            <field name="monthly_rent"/>
+                            <field name="deposit_paid"/>
+                        </group>
+                    </group>
+
+                    <notebook>
+                        <page string="Notes">
+                            <field name="notes" placeholder="Add lease notes..."/>
+                        </page>
+                    </notebook>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <!-- Lease Search View -->
+    <record id="view_lease_search" model="ir.ui.view">
+        <field name="name">real_estate.lease.search</field>
+        <field name="model">real_estate.lease</field>
+        <field name="arch" type="xml">
+            <search string="Search Leases">
+                <field name="name"/>
+                <field name="property_id"/>
+                <field name="tenant_id"/>
+                <field name="start_date"/>
+                <field name="end_date"/>
+
+                <group expand="0" string="Group By">
+                    <filter name="group_by_property" string="Property" context="{'group_by': 'property_id'}"/>
+                    <filter name="group_by_tenant"  string="Tenant" context="{'group_by': 'tenant_id'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <!-- Lease Action -->
+    <record id="action_lease" model="ir.actions.act_window">
+        <field name="name">Leases</field>
+        <field name="res_model">real_estate.lease</field>
+        <field name="view_mode">tree,form</field>
+        <field name="search_view_id" ref="view_lease_search"/>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Create your first lease
+            </p>
+        </field>
+    </record>
+</odoo>
