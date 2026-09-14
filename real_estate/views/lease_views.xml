@@ -26,6 +26,8 @@
             <form string="Lease">
             <header>
                 <field name="state" widget="statusbar" statusbar_visible="draft,active,at_risk,expired,cancelled"/>
+                <button name="mark_as_active" string="Activate" type="object" invisible="state != 'draft'" class="btn-primary"/>
+                <button name="mark_set_back_to_draft" string="Set to Draft" type="object" invisible="state != 'active'" class="btn-secondary"/>
             </header>
                 <sheet>
                     <div class="oe_title">
@@ -42,16 +44,17 @@
                             <field name="start_date"/>
                             <field name="end_date"/>
                         </group>
+                         <group string="Financial Information">
+                            <field name="monthly_rent"/>
+                            <field name="deposit_paid"/>
+                        </group>
 
                         <group string="Dates">
                             <field name="start_date"/>
                             <field name="end_date"/>
                         </group>
 
-                        <group string="Financial Information">
-                            <field name="monthly_rent"/>
-                            <field name="deposit_paid"/>
-                        </group>
+
                     </group>
 
                     <notebook>

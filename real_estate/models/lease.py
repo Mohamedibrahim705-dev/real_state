@@ -31,3 +31,14 @@ class Lease(models.Model):
         ('expired', 'Expired'),
         ('cancelled', 'Cancelled'),
     ], string='Status', default='draft', required=True)
+
+    def mark_as_active(self):
+        """Mark lease as active"""
+        for record in self:
+            record.write({'state': 'active'})
+            
+    def mark_set_back_to_draft(self):
+        """Mark lease as draft"""
+        for record in self:
+            record.write({'state': 'draft'})
+    
