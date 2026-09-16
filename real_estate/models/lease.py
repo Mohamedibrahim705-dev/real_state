@@ -13,6 +13,7 @@ class Lease(models.Model):
         ondelete='cascade',  # If property deleted, delete lease too
         index=True
     )
+    user_id = fields.Many2one('res.users', string='Related User', index=True)
     tenant_id = fields.Many2one(
         'real_estate.tenant',
         string='Tenant',

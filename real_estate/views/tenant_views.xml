@@ -27,8 +27,8 @@
         <field name="arch" type="xml">
             <form string="Tenant">
             <header>
-            <button name="update_notes" string="Update Notes" type="object" class="oe_highlight"/> 
-             <button name="update_Crm_Lead_Notes" string="Update CRM Lead Notes" type="object" class="oe_highlight"/> 
+            <button name="update_notes"  groups="real_estate.group_tenant_manager" string="Update Notes" type="object" class="oe_highlight"/> 
+             <button name="update_Crm_Lead_Notes"  groups="real_estate.group_tenant" string="Update CRM Lead Notes" type="object" class="oe_highlight"/> 
              <button name="update_Crm_Lead_website" string="Update CRM Lead Website" type="object" class="oe_highlight"/>  
              <button name="crm_change_to_email" string="Change to CRM Lead Email" type="object" class="oe_highlight"/> 
             </header>
