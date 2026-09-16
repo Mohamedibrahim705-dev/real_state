@@ -78,3 +78,5 @@ class Property(models.Model):
                 raise UserError("You cannot edit Bedrooms while the property is unavailable.")
 
         return super(Property, self).write(vals)
+
+   

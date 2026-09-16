@@ -36,6 +36,8 @@ class Lease(models.Model):
 
     def mark_as_active(self):
         """Mark lease as active"""
+        if not self.env.user.has_group('real_estate.group_lease_manager'):
+            raise UserError("Only users with the 'Lease Manager' role can edit leases.")
         for record in self:
             record.write({'state': 'active'})
             
@@ -58,3 +60,13 @@ class Lease(models.Model):
         vals['name'] = self.env['ir.sequence'].next_by_code('real_estate.lease')
         return super(Lease, self).create(vals)
     
+
+    def write(self, vals):
+       if not self.env.user.has_group('real_estate.group_lease_manager'):
+        raise UserError("Only users with the 'Lease Manager' role can edit leases.")
+       return super(Lease, self).write(vals)
+    
+    def unlink(self):
+       if not self.env.user.has_group('real_estate.group_lease_manager'):
+        raise UserError("Only users with the 'Lease Manager' role can delete leases.")
+       return super(Lease, self).unlink()
