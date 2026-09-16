@@ -24,3 +24,7 @@ class MaintenanceRequest(models.Model):
         ('high', 'High'),
         ('emergency', 'Emergency')
     ], default='medium', required=True)
+ # assigned_to = fields.Many2one('res.users', string='Assigned To')
+    scheduled_date = fields.Date()
+    completion_date = fields.Date()
+    actual_cost = fields.Float()

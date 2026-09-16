@@ -1,4 +1,5 @@
 from odoo import models, fields, api
+from odoo.exceptions import UserError
 
 class Property(models.Model):
     _name = 'real_estate.property'
@@ -70,3 +71,10 @@ class Property(models.Model):
                 record.write({ str(record.price) + ' '+'EGP'})
             else:
                 record.write({'description': 'This Property is Not Available Now'}) 
+
+    def write(self, vals):
+        if 'bedrooms' in vals:
+            if vals["available"] == True and vals.get('bedrooms') != self.bedrooms :
+                raise UserError("You cannot edit Bedrooms while the property is unavailable.")
+
+        return super(Property, self).write(vals)
