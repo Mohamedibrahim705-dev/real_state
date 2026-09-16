@@ -7,6 +7,7 @@ class Tenant(models.Model):
     
     # === CORE FIELDS ===
     name = fields.Char(string='Tenant Name', required=True, index=True)
+    user_id = fields.Many2one('res.users', string='Related User', index=True)
     email = fields.Char(string='Email', required=True, index=True)
     description = fields.Text(string='Description')
     phone = fields.Char(string='Phone Number')

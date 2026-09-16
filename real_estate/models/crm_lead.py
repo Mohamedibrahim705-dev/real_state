@@ -22,3 +22,4 @@ class CrmLead(models.Model):
                 lead.description = f"{lead.description}\n\n{lead_name}"
             else:
                 lead.description = lead_name
+                

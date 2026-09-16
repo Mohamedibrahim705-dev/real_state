@@ -14,6 +14,7 @@
                 <field name="date_joined"/> 
                 <field name="date_of_birth"/> 
                 <field name="age_category"/>
+                <field name="user_id"/>
              
         
             </tree>
@@ -56,6 +57,7 @@
                 <field name="date_of_birth"/> 
                 <field name="crm_lead_id"/>
                 <field name="website"/>
+                <field name="user_id"/>
                          
                            
                             
@@ -110,6 +112,7 @@
                 <field name="name"/>
                 <field name="email"/>
                 <field name="date_joined"/>
+        
                 <templates>
                     <t t-name="kanban-box">
                         <div class="oe_kanban_global_click">
