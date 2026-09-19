@@ -33,6 +33,10 @@
                     <button name="property_type_as_villa" string="Change to Villa" type="object" class="btn btn-secondary"/> 
                     <button name="set_agent_name" string="Set Agent Name" type="object" class="btn btn-outline-info"/>  
                     <button name="set_agent_email" string="Set Agent Email" type="object" class="btn btn-outline-info"/>  
+                    <button type="action" name="%(action_real_estate_lease_wizard)d"
+                            string="Create Lease"
+                            context="{'default_property_id': active_id}"
+                            class="oe_highlight"/>
                     <button name="price_appears_if_available" string="Show Price"  invisible="not available" type="object" class="btn btn-outline-primary"/> 
                      <field name="price" invisible="1"/>  
             
