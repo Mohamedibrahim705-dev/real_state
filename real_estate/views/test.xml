@@ -1,4 +1,5 @@
- <!---   <record id="view_lease_search" model="ir.ui.view">
+<odoo>
+<!-- <record id="view_lease_search" model="ir.ui.view">
         <field name="name">real_estate.lease.search</field>
         <field name="model">real_estate.lease</field>
         <field name="arch" type="xml">
@@ -18,3 +19,5 @@
             </search>
         </field>
     </record>
+-->
+</odoo>
