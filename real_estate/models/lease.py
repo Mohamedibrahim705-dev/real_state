@@ -15,6 +15,7 @@ class Lease(models.Model):
         ondelete='cascade',  # If property deleted, delete lease too
         index=True
     )
+    lease_image = fields.Binary(string="Property Image")
     user_id = fields.Many2one('res.users', string='Related User', index=True)
     tenant_id = fields.Many2one(
         'real_estate.tenant',
@@ -179,26 +180,26 @@ class Lease(models.Model):
     )
 
     total_cost = fields.Float(compute='_compute_total_cost', string='Total Cost')
+    plumbing_cost = fields.Float(string='Plumbing Cost')
+    electrical_cost = fields.Float(string='Electrical Cost')
+    air_condition_cost = fields.Float(string='Air Condition Cost')
+    appliance_cost = fields.Float(string='Appliance Cost')
+    other_cost = fields.Float(string='Other Cost')
+   
 
-    @api.depends('maintenance_ids.actual_cost')
+    @api.depends(
+        'plumbing_cost',
+        'electrical_cost',
+        'air_condition_cost',
+        'appliance_cost',
+        'other_cost',
+    )
     def _compute_total_cost(self):
         for lease in self:
-            # 1
-            # lease.total_cost = sum(maintenance.actual_cost for maintenance in lease.maintenance_ids)
-
-            # 2
-            # lease.total_cost = 0
-            # total_cost = 0
-            # for maintenance in lease.maintenance_ids:
-            #     if maintenance.actual_cost:
-            #         total_cost += maintenance.actual_cost
-            # lease.total_cost = total_cost   
-
-            # 3
-            lease_maintenance_ids = self.env['maintenance.request'].search([('lease_id', '=', lease.id)])  
-            lease.total_cost = 0
-            for maintenance in lease_maintenance_ids:
-                if maintenance.actual_cost:
-                    lease.total_cost += maintenance.actual_cost
-
-
+            lease.total_cost = sum((
+                lease.plumbing_cost,
+                lease.electrical_cost,
+                lease.air_condition_cost,
+                lease.appliance_cost,
+                lease.other_cost,
+            ))

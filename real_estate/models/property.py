@@ -12,6 +12,8 @@ class Property(models.Model):
     bedrooms = fields.Integer(string='Bedrooms', required=True)
     available = fields.Boolean(string='Available', default=True, index=True)    
     agent_id = fields.Many2one('res.users', string='Sales Person')
+
+    property_image = fields.Binary(string="Property Image")
     lease_ids = fields.One2many(
         'real_estate.lease',
         'property_id',

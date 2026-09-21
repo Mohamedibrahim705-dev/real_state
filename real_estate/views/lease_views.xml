@@ -32,6 +32,7 @@
                 <button name="mark_set_back_to_draft" string="Set to Draft" type="object" invisible="state != 'active'" class="btn-secondary"/>
             </header>
                 <sheet>
+                <field name="lease_image" widget="image" class="oe_right oe_avatar" options="{'size': [120, 120]}"/>
                     <div name= "button_box" class="oe_button_box" >
                     <button name="action_open_related_maintenance" string="View Maintenance" icon="fa fa-list" 
                      type="object" />
@@ -49,24 +50,30 @@
                             <field name="state"/>
                             <field name="user_id"/>
                             <field name="tenant_id"/>
-                            <field name="start_date"/>
-                            <field name="end_date"/>
-                            <field name="next_electric_recharge" string="Electricity Bill Date"/>
                         </group>
+                      
                          <group string="Financial Information">
                             <field name="monthly_rent"/>
-                            <field name="total_cost"/>
                             <field name="deposit_paid"/>
+                            <field name="total_cost" decoration-danger="1"/>
+                            <field name="plumbing_cost"/>
+                            <field name="electrical_cost"/>
+                            <field name="air_condition_cost"/>
+                            <field name="appliance_cost"/>
+                            <field name="other_cost"/>
                             <field name ="is_active"/>
-                            <field name ="duration_months"/>
-                            <field name ="tenant_age"/>
                         </group>
 
                         <group string="Dates">
+                            <field name ="tenant_age"/>   
                             <field name="start_date"/>
                             <field name="end_date"/>
-                            
+                            <field name="start_date"/>
+                            <field name="end_date"/>
+                            <field name="next_electric_recharge" string="Electricity Bill Date"/>
+                            <field name ="duration_months"/>
                         </group>
+                       
 
 
                     </group>
