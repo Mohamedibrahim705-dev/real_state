@@ -35,6 +35,7 @@ class LeaseWizard(models.TransientModel):
         default=0.0,
     )
 
+
     @api.onchange('property_id')
     def _onchange_property_id(self):
         if self.property_id:

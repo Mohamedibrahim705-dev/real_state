@@ -1,3 +1,4 @@
+from datetime import timedelta 
 from odoo import models, fields, api
 from odoo.exceptions import UserError
 from odoo.exceptions import ValidationError
@@ -22,6 +23,7 @@ class Lease(models.Model):
         ondelete='cascade',
         index=True
     )
+    next_electric_recharge = fields.Date(string='Electricity Bill Date')
 
     start_date = fields.Date(string='Start Date', required=True)
     end_date = fields.Date(string='End Date', required=True)
@@ -133,6 +135,70 @@ class Lease(models.Model):
             raise ValidationError("The selected property is not available.")
         if self.property_id and self.property_id.price:
             self.monthly_rent = self.property_id.price 
-            self.deposit_paid = self.property_id.price * 0.1    
+            self.deposit_paid = self.property_id.price * 0.1 
+    
 
-  
+    @api.onchange('start_date')          
+    def _onchange_next_electric_recharge(self):
+        """Update electricity bill date"""
+        if self.start_date :
+            self.next_electric_recharge = self.start_date + timedelta(days=30)
+
+    def action_submit_request(self):
+        """Create maintenance request and notify manager"""
+        self.ensure_one()
+        
+        # 1. Create maintenance.request record
+        maintenance_request = self.env['maintenance.request'].create({
+            'property_id': self.property_id.id,
+            'lease_id': self.id,
+            'issue_type': 'electrical',  # Default issue type for this example
+            'description': 'Maintenance request created from lease form.',
+            'urgency': 'medium',  # Default urgency for this example
+            'preferred_date': self.next_electric_recharge,
+            'tenant_phone': self.tenant_id.phone ,
+            'state': 'submitted',
+        })
+        return {
+            'type': 'ir.actions.client',
+            'tag': 'display_notification',
+            'params': {
+                'title': 'Request Submitted',
+                'message': 'Your maintenance request has been submitted successfully and the manager has been notified.',
+                'type': 'success',
+                'sticky': False,
+                'next': {'type': 'ir.actions.act_window_close'},
+            },
+        }
+
+    #calculate total cost of maintenance requests for this lease
+    maintenance_ids= fields.One2many(
+        'maintenance.request',
+        'lease_id',
+        string='Maintenance Requests',
+    )
+
+    total_cost = fields.Float(compute='_compute_total_cost', string='Total Cost')
+
+    @api.depends('maintenance_ids.actual_cost')
+    def _compute_total_cost(self):
+        for lease in self:
+            # 1
+            # lease.total_cost = sum(maintenance.actual_cost for maintenance in lease.maintenance_ids)
+
+            # 2
+            # lease.total_cost = 0
+            # total_cost = 0
+            # for maintenance in lease.maintenance_ids:
+            #     if maintenance.actual_cost:
+            #         total_cost += maintenance.actual_cost
+            # lease.total_cost = total_cost   
+
+            # 3
+            lease_maintenance_ids = self.env['maintenance.request'].search([('lease_id', '=', lease.id)])  
+            lease.total_cost = 0
+            for maintenance in lease_maintenance_ids:
+                if maintenance.actual_cost:
+                    lease.total_cost += maintenance.actual_cost
+
+

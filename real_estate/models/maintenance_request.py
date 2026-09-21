@@ -13,6 +13,14 @@ class MaintenanceRequest(models.Model):
         default=lambda self: self.env.user,
         index=True,
     )
+
+    state = fields.Selection([
+        ('draft', 'Draft'),
+        ('in_progress', 'In Progress'),
+        ('submitted', 'Submitted')
+    ], string="State", default='draft')
+    tenant_phone = fields.Char(string="Tenant Phone")
+    preferred_date = fields.Date(string="Preferred Date")
     tenant_id = fields.Many2one(related='lease_id.tenant_id', store=True)
     property_id = fields.Many2one(related='lease_id.property_id', store=True)
     assigned_to = fields.Many2one('res.users', string='Assigned To')

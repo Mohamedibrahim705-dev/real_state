@@ -10,7 +10,8 @@
                 <field name="lease_id"/>
                 <field name="assigned_to"/>
                 <field name="tenant_id"/>
-                <field name="property_id"/> 
+                <field name="property_id"/>
+                <field name="scheduled_date" string="Electricity Bill Date" readonly="1"/>
                 <field name="issue_type"/>
                 <field name="urgency"/> 
         
@@ -32,6 +33,7 @@
                     <group string="Maintenance Details">
                         <group>
                 <field name="lease_id"/>
+                <field name= "actual_cost"/>
                 <field name="assigned_to"/>
                 <field name="tenant_id"/>
                 <field name="property_id"/> 
