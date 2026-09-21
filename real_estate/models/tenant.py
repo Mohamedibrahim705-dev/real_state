@@ -24,6 +24,12 @@ class Tenant(models.Model):
         ('B', '21-40'),
         ('C', '41-60')],string='Age Category')
 
+    lease_ids = fields.One2many(
+        'real_estate.lease',
+        'tenant_id',
+        string='Leases',
+    )
+
     def update_notes(self):
         for record in self:
             record.write({'notes' : record.name})

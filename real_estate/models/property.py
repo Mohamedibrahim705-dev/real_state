@@ -4,7 +4,7 @@ from odoo.exceptions import UserError
 class Property(models.Model):
     _name = 'real_estate.property'
     _description = 'Real Estate Property'
-
+    
     name = fields.Char(string='Property Name', required=True, index=True)
     description = fields.Text(string='Description')
     price = fields.Float(string='Monthly Rent', required=True) 
@@ -12,12 +12,26 @@ class Property(models.Model):
     bedrooms = fields.Integer(string='Bedrooms', required=True)
     available = fields.Boolean(string='Available', default=True, index=True)    
     agent_id = fields.Many2one('res.users', string='Sales Person')
+    lease_ids = fields.One2many(
+        'real_estate.lease',
+        'property_id',
+        string='Leases',
+    )
+    lease_count = fields.Integer(      #Computed field to count the number of leases associated with the property
+        string='Leases',               # result in xml view as "Leases (count)"
+        compute='_compute_lease_count',
+    )
     property_type = fields.Selection([
         ('apartment', 'Apartment'),
         ('house', 'House'),
         ('villa', 'Villa'),
         ('commercial', 'Commercial'),
     ], string='Property Type', required=True)
+
+    @api.depends('lease_ids')           # Compute the number of leases associated with the property
+    def _compute_lease_count(self):
+        for record in self:
+            record.lease_count = len(record.lease_ids)
 
     def mark_as_occupied(self):
             """Mark property as no longer available"""
@@ -78,5 +92,21 @@ class Property(models.Model):
                 raise UserError("You cannot edit Bedrooms while the property is unavailable.")
 
         return super(Property, self).write(vals)
+
+    def action_open_related_leases(self):
+        self.ensure_one()
+        action = self.env["ir.actions.act_window"]._for_xml_id("real_estate.action_lease")
+        action['views'] = [
+            
+            (self.env.ref('real_estate.view_lease_form').id, 'form'),
+        ]
+        action['domain'] = [('property_id', '=', self.id)]
+        action['context'] = {
+            **self.env.context,
+            'default_property_id': self.id,
+        }
+        return action
+    
+            
 
    

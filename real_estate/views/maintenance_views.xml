@@ -8,6 +8,7 @@
             <tree string="maintenances">
                 <field name="name"/>
                 <field name="lease_id"/>
+                <field name="assigned_to"/>
                 <field name="tenant_id"/>
                 <field name="property_id"/> 
                 <field name="issue_type"/>
@@ -31,6 +32,7 @@
                     <group string="Maintenance Details">
                         <group>
                 <field name="lease_id"/>
+                <field name="assigned_to"/>
                 <field name="tenant_id"/>
                 <field name="property_id"/> 
                         </group>

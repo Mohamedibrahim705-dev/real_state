@@ -7,9 +7,15 @@ class MaintenanceRequest(models.Model):
     
     name = fields.Char()
     lease_id = fields.Many2one('real_estate.lease')
+    assigned_to = fields.Many2one(
+        'res.users',
+        string='Assigned To',
+        default=lambda self: self.env.user,
+        index=True,
+    )
     tenant_id = fields.Many2one(related='lease_id.tenant_id', store=True)
     property_id = fields.Many2one(related='lease_id.property_id', store=True)
-    
+    assigned_to = fields.Many2one('res.users', string='Assigned To')
     issue_type = fields.Selection([
         ('plumbing', 'Plumbing'),
         ('electrical', 'Electrical'),
@@ -24,7 +30,6 @@ class MaintenanceRequest(models.Model):
         ('high', 'High'),
         ('emergency', 'Emergency')
     ], default='medium', required=True)
- # assigned_to = fields.Many2one('res.users', string='Assigned To')
     scheduled_date = fields.Date()
     completion_date = fields.Date()
     actual_cost = fields.Float()
