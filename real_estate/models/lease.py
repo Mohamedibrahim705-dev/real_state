@@ -203,3 +203,21 @@ class Lease(models.Model):
                 lease.appliance_cost,
                 lease.other_cost,
             ))
+
+              # 1
+            #lease.total_cost = sum(maintenance.actual_cost for maintenance in lease.maintenance_ids)
+
+            # 2
+            # lease.total_cost = 0
+            # total_cost = 0
+            # for maintenance in lease.maintenance_ids:
+            #     if maintenance.actual_cost:
+            #         total_cost += maintenance.actual_cost
+            # lease.total_cost = total_cost   
+
+            # 3
+            #lease_maintenance_ids = self.env['maintenance.request'].search([('lease_id', '=', lease.id)])  
+            #lease.total_cost = 0
+            #for maintenance in lease_maintenance_ids:
+                #if maintenance.actual_cost:
+                    #lease.total_cost += maintenance.actual_cost

@@ -32,6 +32,7 @@ Long description of module's purpose
         'views/property_views.xml',
         'views/tenant_views.xml',
         'views/maintenance_views.xml',
+        'views/payment_view.xml',
         'views/lease_views.xml',
         'wizard/tenant_wizard.xml',
         'views/crm_lead_view.xml',
