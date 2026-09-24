@@ -74,10 +74,10 @@ class Lease(models.Model):
         return super(Lease, self).create(vals)
     
 
-    def write(self, vals):
-       if not self.env.user.has_group('real_estate.group_lease_manager'):
-        raise UserError("Only users with the 'Lease Manager' role can edit leases.")
-       return super(Lease, self).write(vals)
+    # def write(self, vals):
+    #    if not self.env.user.has_group('real_estate.group_lease_manager'):
+    #     raise UserError("Only users with the 'Lease Manager' role can edit leases.")
+    #    return super(Lease, self).write(vals)
     
     def unlink(self):
        if not self.env.user.has_group('real_estate.group_lease_manager'):
@@ -221,3 +221,55 @@ class Lease(models.Model):
             #for maintenance in lease_maintenance_ids:
                 #if maintenance.actual_cost:
                     #lease.total_cost += maintenance.actual_cost
+
+    payment_ids= fields.One2many('lease.payment','lease_id')
+    cash_total = fields.Float(string='Cash Total', compute='_compute_payment_method_costs', store=True)
+    check_total = fields.Float(string='Check Total', compute='_compute_payment_method_costs', store=True)
+    bank_transfer_total = fields.Float(string='Bank Transfer Total', compute='_compute_payment_method_costs', store=True)
+    credit_card_total = fields.Float(string='Credit Card Total', compute='_compute_payment_method_costs', store=True)
+    other_total = fields.Float(string='Other Total', compute='_compute_payment_method_costs', store=True)
+    payment_method_total = fields.Float(string='Payment Method Total', compute='_compute_payment_method_costs', store=True)
+
+    @api.depends('payment_ids.amount', 'payment_ids.payment_method')
+    def _compute_payment_method_costs(self):
+        for record in self:
+            payment_method_totals = {
+                method: sum(
+                    record.env['lease.payment'].filtered(
+                        lambda payment: payment.payment_method == method
+                    ).mapped('amount')
+                )
+                for method in ['cash', 'check', 'bank_transfer', 'credit_card', 'other']
+            }
+
+            record.cash_total = payment_method_totals['cash']
+            record.check_total = payment_method_totals['check']
+            record.bank_transfer_total = payment_method_totals['bank_transfer']
+            record.credit_card_total = payment_method_totals['credit_card']
+            record.other_total = payment_method_totals['other']
+            record.payment_method_total = sum(payment_method_totals.values())
+
+    def _cron_auto_expire_leases(self):
+        """Scheduled action - expire leases whose end date has passed"""
+        today = fields.Date.today()
+        expired_leases = self.search([
+            ('end_date', '<', today),
+        ])
+        for lease in expired_leases:
+            lease.write({'state': 'expired'})
+
+
+
+         # === VALIDATION ===
+    @api.constrains('start_date', 'end_date')
+    def _check_dates(self):
+        """Ensure end date is after start date"""
+        for record in self:
+            if record.start_date and record.end_date:
+                if record.end_date <= record.start_date:
+                    raise ValidationError("End date must be after start date")
+
+    _sql_constraints = [
+        ('email_unique', 'UNIQUE(email)', 'Email must be unique! This email is already registered.'),
+    ]       
+                    

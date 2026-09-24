@@ -1,4 +1,5 @@
 from odoo import models, fields, api
+from odoo.exceptions import UserError
 
 class Tenant(models.Model):
     _name = 'real_estate.tenant'
@@ -46,4 +47,10 @@ class Tenant(models.Model):
                         record.write({'notes' : record.crm_lead_id.email_from})
                     else:
                         record.write({'notes' : record.website}) 
-                             
+
+    @api.constrains('date_of_birth')
+    def _check_date_of_birth(self):
+        """Ensure date of birth is not in the future"""
+        for record in self:
+            if record.date_of_birth and record.date_of_birth > fields.Date.today():
+                raise UserError("Date of birth cannot be in the future.")                            

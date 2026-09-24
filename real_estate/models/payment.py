@@ -37,7 +37,23 @@ class LeasePayment(models.Model):
 
     notes = fields.Text(string='Notes')
 
-    @api.depends('amount', 'late_fee')
+    @api.model
+    def create(self, vals):
+        if not vals.get('name') or vals.get('name') == 'New':
+            vals['name'] = self.env['ir.sequence'].next_by_code('lease.payment')
+        return super(LeasePayment, self).create(vals)
+
+    @api.depends('amount', 'late_fee', 'late_fee_applied')
     def _compute_total_amount(self):
         for record in self:
-            record.total_amount = record.amount + record.late_fee
+            record.total_amount = record.amount + (record.late_fee if record.late_fee_applied else 0)
+
+    @api.model
+    def _cron_auto_mark_paid(self):
+        """Scheduled action - mark payments with amount as paid"""
+        pending_payments = self.sudo().search([
+            ('amount', '>', 0),
+            ('state', 'in', ['draft', 'pending']),
+        ])
+        for payment in pending_payments:
+            payment.sudo().write({'state': 'paid'})

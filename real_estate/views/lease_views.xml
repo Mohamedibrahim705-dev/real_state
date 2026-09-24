@@ -68,10 +68,16 @@
                             <field name ="tenant_age"/>   
                             <field name="start_date"/>
                             <field name="end_date"/>
-                            <field name="start_date"/>
-                            <field name="end_date"/>
                             <field name="next_electric_recharge" string="Electricity Bill Date"/>
                             <field name ="duration_months"/>
+                        </group>
+                        <group>
+                            <field name="cash_total"/>
+                            <field name="check_total"/>
+                            <field name="bank_transfer_total"/>
+                            <field name="credit_card_total"/>
+                            <field name="other_total"/>
+                            <field name="payment_method_total"/>
                         </group>
                        
 
@@ -82,6 +88,16 @@
                         <page string="Notes">
                             <field name="notes" placeholder="Add lease notes..."/>
                         </page>
+                        <page string="Payment Methods">
+                        <group>
+                            <field name="cash_total"/>
+                            <field name="check_total"/>
+                            <field name="bank_transfer_total"/>
+                            <field name="credit_card_total"/>
+                            <field name="other_total"/>
+                            <field name="payment_method_total"/>
+                        </group>
+                       </page>
                             <page string="Maintenance Requests">
                             <field name="maintenance_ids">
                                 <tree create="true" delete="false">
@@ -91,7 +107,7 @@
 
                                 </tree>
                             </field>
-                        </page>
+                       </page>
                     </notebook>
                 </sheet>
             </form>
@@ -129,5 +145,16 @@
                 Create your first lease
             </p>
         </field>
+    </record>
+        <record id="ir_cron_auto_expire_leases" model="ir.cron">
+        <field name="name">Real Estate: Auto Expire Leases</field>
+        <field name="model_id" ref="model_real_estate_lease"/>
+        <field name="state">code</field>
+        <field name="code">model._cron_auto_expire_leases()</field>
+        <field name="interval_number">1</field>
+        <field name="interval_type">days</field>
+        <field name="numbercall">-1</field>
+        <field name="doall" eval="False"/>
+        <field name="active" eval="True"/>
     </record>
 </odoo>
