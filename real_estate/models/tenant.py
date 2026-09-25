@@ -54,3 +54,20 @@ class Tenant(models.Model):
         for record in self:
             if record.date_of_birth and record.date_of_birth > fields.Date.today():
                 raise UserError("Date of birth cannot be in the future.")                            
+
+
+    def create_portal_user(self):
+        """Create a portal user for the tenant"""
+        for record in self:
+            if not record.user_id:
+                # Create a new user with portal access
+                new_user = self.env['res.users'].create({
+                    'name': record.name,
+                    'login': record.email,
+                    'email': record.email,
+                    'groups_id': [(6, 0, [self.env.ref('base.group_portal').id])],
+                })
+                #  # Link user to tenant
+                record.user_id = new_user.id     
+            else:
+                raise UserError("This tenant already has a portal user.")
