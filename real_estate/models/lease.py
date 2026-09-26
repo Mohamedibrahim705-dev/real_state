@@ -273,3 +273,36 @@ class Lease(models.Model):
         ('email_unique', 'UNIQUE(email)', 'Email must be unique! This email is already registered.'),
     ]       
                     
+############## Mail ################
+    next_payment_date = fields.Date(string='Next Payment Date', index=True)
+    last_reminder_sent = fields.Date(string='Last Reminder Sent', readonly=True)
+
+    def send_reminder_email(self):
+        template_xml_id = 'real_estate.email_template_payment_upcoming'
+        if not template_xml_id:
+            return
+            
+        template = self.env.ref(template_xml_id, raise_if_not_found=False)
+        if not template:
+            return
+
+        for lease in self:
+            if not lease.tenant_id.email:
+                lease.message_post(body="Could not send reminder: Tenant has no email.")
+                continue
+            template.send_mail(lease.id, force_send=True)
+            lease.last_reminder_sent = fields.Date.today()
+
+    @api.model
+    def _cron_send_payment_reminders(self):
+        """Scheduled action - remind tenants whose next payment is due tomorrow"""
+        tomorrow = fields.Date.context_today(self) + timedelta(days=1)
+        leases = self.search([
+            ('next_payment_date', '=', tomorrow),
+            ('state', 'in', ['active', 'at_risk']),
+            ('tenant_id.email','!=',False)
+        ])
+        leases.send_reminder_email()
+
+
+            

@@ -28,8 +28,9 @@
             <header>
                 <field name="state" widget="statusbar" statusbar_visible="draft,active,at_risk,expired,cancelled"/>
                 <button name="mark_as_active" string="Activate" type="object" invisible="state != 'draft'" class="btn-primary"/>
-               <button name="action_submit_request" string="Submit Maintenance Request" type="object" class="btn-primary"/>
+                <button name="action_submit_request" string="Submit Maintenance Request" type="object" class="btn-primary"/>
                 <button name="mark_set_back_to_draft" string="Set to Draft" type="object" invisible="state != 'active'" class="btn-secondary"/>
+                <button name="send_reminder_email" string="Email Reminder" type="object" class="oe_highlight"/>
             </header>
                 <sheet>
                 <field name="lease_image" widget="image" class="oe_right oe_avatar" options="{'size': [120, 120]}"/>
@@ -68,6 +69,9 @@
                             <field name ="tenant_age"/>   
                             <field name="start_date"/>
                             <field name="end_date"/>
+                            <field name="next_payment_date"/>
+                            <field name='last_reminder_sent'/>
+
                             <field name="next_electric_recharge" string="Electricity Bill Date"/>
                             <field name ="duration_months"/>
                         </group>
@@ -151,6 +155,17 @@
         <field name="model_id" ref="model_real_estate_lease"/>
         <field name="state">code</field>
         <field name="code">model._cron_auto_expire_leases()</field>
+        <field name="interval_number">1</field>
+        <field name="interval_type">days</field>
+        <field name="numbercall">-1</field>
+        <field name="doall" eval="False"/>
+        <field name="active" eval="True"/>
+    </record>
+    <record id="ir_cron_send_payment_reminders" model="ir.cron">
+        <field name="name">Real Estate: Payment Reminder (Due Tomorrow)</field>
+        <field name="model_id" ref="model_real_estate_lease"/>
+        <field name="state">code</field>
+        <field name="code">model._cron_send_payment_reminders()</field>
         <field name="interval_number">1</field>
         <field name="interval_type">days</field>
         <field name="numbercall">-1</field>

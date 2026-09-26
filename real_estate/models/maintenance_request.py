@@ -77,3 +77,29 @@ class MaintenanceRequest(models.Model):
                 })
         
         return True
+    
+    def send_reminder_email(self):
+     template_xml_id = "real_estate.email_template_maintenance"
+     if not template_xml_id:
+        return
+
+     template = self.env.ref(template_xml_id, raise_if_not_found=False)
+     if not template:
+        return
+
+     for main in self:
+        if not main.assigned_to.email:
+            main.message_post(
+                body="Could not send reminder: Assigned user has no email."
+            )
+            continue
+        template.send_mail(main.id, force_send=True)
+
+    def _cron_auto_send_email_reminder_main(self):
+     next_email = self.search(
+        [
+            ("scheduled_date", "=", fields.Date.today() + timedelta(days=1)),
+        ]
+    )
+     for main in next_email:
+        main.send_reminder_email()
